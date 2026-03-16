@@ -10,7 +10,7 @@
 
 | รหัสนักศึกษา | ชื่อ-สกุล | รับผิดชอบ |
 |---|---|---|
-| 67543210032 | นายวรรธนะ คำมาลัย | Auth Service + Deploy Auth |
+| 67543210023 | นายวรรธนะ คำมาลัย | Auth Service + Deploy Auth |
 | 67543210008 | นายณัฐพงศ์ จินะปัญญา | Task/User Service + Gateway + Docs |
 
 ---
@@ -275,4 +275,7 @@ curl https://[USER_URL]/api/users -H "Authorization: Bearer $TOKEN"
 | 09_protected_401_check.png | GET /api/tasks ไม่มี JWT → 401 |
 | 10_member_forbidden_403.png | member GET /api/users → 403 |
 | 11_admin_users_success.png | admin GET /api/users → 200 |
-| 12_readme_architecture.png | README ส่วน architecture |
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE2LCJlbWFpbCI6InRlc3R1c2VyQGV4YW1wbGUuY29tIiwicm9sZSI6Im1lbWJlciIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJpYXQiOjE3NzM2NTMxODEsImV4cCI6MTc3MzY1Njc4MX0.NFywJl71ok54hl_QGUQwpz49fYzJrrAKud0lUYykO3E
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoiYWRtaW5AbGFiLmxvY2FsIiwicm9sZSI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc3MzY1NDU3NiwiZXhwIjoxNzczNjU4MTc2fQ.L1imC-LXBoXMrpzOyMycdtLMNrG0PKdx8XBQ2JSvUOc
