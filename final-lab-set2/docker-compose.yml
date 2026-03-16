@@ -104,6 +104,7 @@ services:
     depends_on:
       user-db:
         condition: service_healthy
+        
   frontend:
     build: ./frontend
     ports:
