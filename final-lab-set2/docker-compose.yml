@@ -1,0 +1,120 @@
+services:
+
+  # ─── Databases ───────────────────────────────────────────────
+  auth-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./auth-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d authdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  task-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./task-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - task-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d taskdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  user-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5435:5432"
+    volumes:
+      - ./user-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - user-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d userdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ─── Services ────────────────────────────────────────────────
+  auth-service:
+    build: ./auth-service
+    environment:
+      DB_HOST: auth-db
+      DB_PORT: 5432
+      DB_NAME: authdb
+      DB_USER: admin
+      DB_PASSWORD: secret
+      JWT_SECRET: ${JWT_SECRET:-dev-shared-secret}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      PORT: 3001
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+  task-service:
+    build: ./task-service
+    environment:
+      DB_HOST: task-db
+      DB_PORT: 5432
+      DB_NAME: taskdb
+      DB_USER: admin
+      DB_PASSWORD: secret
+      JWT_SECRET: ${JWT_SECRET:-dev-shared-secret}
+      PORT: 3002
+      NODE_ENV: development
+    ports:
+      - "3002:3002"
+    depends_on:
+      task-db:
+        condition: service_healthy
+
+  user-service:
+    build: ./user-service
+    environment:
+      DB_HOST: user-db
+      DB_PORT: 5432
+      DB_NAME: userdb
+      DB_USER: admin
+      DB_PASSWORD: secret
+      JWT_SECRET: ${JWT_SECRET:-dev-shared-secret}
+      PORT: 3003
+      NODE_ENV: development
+    ports:
+      - "3003:3003"
+    depends_on:
+      user-db:
+        condition: service_healthy
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"    # เปลี่ยนจาก "80:80"
+    depends_on:
+      - auth-service
+      - task-service
+      - user-service
+
+volumes:
+  auth-db-data:
+  task-db-data:
+  user-db-data:
+
